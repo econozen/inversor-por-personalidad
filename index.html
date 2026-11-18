@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversor por Personalidad</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Test educativo de autoconocimiento: descubre qué estilo de inversión encaja con tu personalidad.">
+<style>
+/* Layout: columna central sobria (máx. 46rem) con cabecera fina; una pantalla por paso (bienvenida, pregunta, resultado). */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface-2: #f5f7fa;
+  --ink: #0d1b2a;
+  --muted: #4a5a6d;
+  --line: #d2d9e3;
+  --brand: #173b64;
+  --brand-strong: #0e2742;
+  --brand-soft: #e2eaf4;
+  --on-brand: #ffffff;
+  --accent: #965800;
+  --accent-fill: #d9952c;
+  --accent-soft: #fbf0dc;
+  --danger: #9f3326;
+  --ok: #1c6a4e;
+  --focus: #c27a00;
+  --shadow: 0 1px 2px rgba(13, 27, 42, .05), 0 10px 30px rgba(13, 27, 42, .07);
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-num: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 10px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #09131f; --surface: #0f1d2d; --surface-2: #0c1825; --ink: #e6edf5; --muted: #9fb1c6; --line: #22374f;
+    --brand: #8fb9e8; --brand-strong: #c2d9f3; --brand-soft: #15304e; --on-brand: #08121e;
+    --accent: #f2b75c; --accent-fill: #e3a240; --accent-soft: #2c2312; --danger: #f1907f; --ok: #63c9a0; --focus: #f2b75c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #09131f; --surface: #0f1d2d; --surface-2: #0c1825; --ink: #e6edf5; --muted: #9fb1c6; --line: #22374f;
+  --brand: #8fb9e8; --brand-strong: #c2d9f3; --brand-soft: #15304e; --on-brand: #08121e;
+  --accent: #f2b75c; --accent-fill: #e3a240; --accent-soft: #2c2312; --danger: #f1907f; --ok: #63c9a0; --focus: #f2b75c;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.18; text-wrap: balance; margin: 0; color: var(--ink); }
+p { margin: 0; }
+button { font: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.wrap { max-width: 46rem; margin: 0 auto; }
+
+/* Cabecera */
+.site-head { border-bottom: 1px solid var(--line); padding-block: 14px; }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: .01em; }
+.brand svg { flex: none; }
+.head-note { font-size: .8rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+main { padding-block: clamp(20px, 5vw, 48px) 32px; }
+
+/* Utilidades de texto */
+.eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.lead { font-size: 1.12rem; color: var(--ink); }
+.muted { color: var(--muted); }
+
+/* Botones */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 0 22px; border-radius: 8px; border: 1.5px solid transparent;
+  font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none;
+  transition: background-color .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease), transform .12s var(--ease), opacity .18s;
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn-primary { background: var(--brand); color: var(--on-brand); }
+.btn-primary:hover:not(:disabled) { background: var(--brand-strong); }
+.btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn-secondary:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+.btn-ghost { background: transparent; color: var(--muted); border-color: transparent; padding: 0 12px; min-height: 44px; }
+.btn-ghost:hover { color: var(--ink); }
+.btn-ghost.is-armed { color: var(--danger); border-color: var(--danger); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn svg { flex: none; }
+
+/* Bienvenida */
+.welcome { display: grid; gap: 28px; }
+.welcome h1 { font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -.01em; }
+.welcome .intro { display: grid; gap: 14px; max-width: 40rem; }
+.measures { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.measures li { display: flex; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .98rem; }
+.measures li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--accent-fill); transform: translateY(-1px); }
+.measures-wrap { display: grid; gap: 10px; }
+.measures-wrap h2 { font-family: var(--font-body); font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 14px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 6px; font-size: .95rem; }
+.note strong { font-size: .98rem; }
+.note.disclaimer { background: var(--accent-soft); border-color: transparent; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.cta-row .muted { font-size: .92rem; }
+
+/* Cuestionario */
+.quiz { display: grid; gap: 22px; }
+.progress { display: grid; gap: 10px; }
+.progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.progress-label { font-weight: 600; font-variant-numeric: tabular-nums; }
+.progress-label span { color: var(--muted); font-weight: 400; }
+.progress-track { position: relative; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent-fill); border-radius: 99px; transition: width .45s var(--ease); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: clamp(18px, 4.5vw, 36px); }
+.q-area { display: grid; gap: 22px; }
+.q-area.enter-next { animation: inNext .38s var(--ease) both; }
+.q-area.enter-prev { animation: inPrev .38s var(--ease) both; }
+@keyframes inNext { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes inPrev { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+.q-dimension { font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.q-title { font-size: clamp(1.4rem, 4.2vw, 1.9rem); outline: none; }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.options { display: grid; gap: 12px; }
+.opt {
+  position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+  padding: 16px 16px; min-height: 64px; border: 1.5px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); cursor: pointer;
+  transition: border-color .18s var(--ease), background-color .18s var(--ease), box-shadow .18s var(--ease), transform .18s var(--ease);
+}
+.opt:hover { border-color: var(--brand); }
+.opt input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+.opt-key {
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 7px;
+  border: 1.5px solid var(--line); font-family: var(--font-num); font-size: .85rem; font-weight: 600; color: var(--muted);
+  transition: all .18s var(--ease);
+}
+.opt-text { min-width: 0; font-size: 1.02rem; line-height: 1.45; }
+.opt-check { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; transition: all .18s var(--ease); }
+.opt-check svg { opacity: 0; transform: scale(.5); transition: all .2s var(--ease); }
+.opt.is-selected { border-color: var(--brand); background: var(--brand-soft); box-shadow: 0 0 0 1px var(--brand) inset; }
+.opt.is-selected .opt-key { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.opt.is-selected .opt-check { background: var(--brand); border-color: var(--brand); }
+.opt.is-selected .opt-check svg { opacity: 1; transform: none; }
+.opt.pop { animation: pop .28s var(--ease); }
+@keyframes pop { 40% { transform: scale(1.012); } 100% { transform: none; } }
+.q-hint { font-size: .9rem; color: var(--muted); min-height: 1.4em; }
+.q-hint.is-ok { color: var(--ok); }
+.quiz-nav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+.quiz-nav .group { display: flex; gap: 12px; flex-wrap: wrap; }
+.kbd-tip { font-size: .85rem; color: var(--muted); }
+.kbd-tip kbd { font-family: var(--font-num); font-size: .8rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--surface); }
+
+/* Resultados */
+.results { display: grid; gap: 28px; }
+.res-hero { display: grid; gap: 14px; }
+.res-hero h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); letter-spacing: -.015em; outline: none; }
+.slogan { font-family: var(--font-display); font-style: italic; font-size: clamp(1.15rem, 3.4vw, 1.4rem); color: var(--muted); }
+.affinity { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: .95rem; }
+.affinity b { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.secondary-note { background: var(--accent-soft); border-radius: var(--radius); padding: 14px 16px; font-size: .98rem; }
+.res-desc { font-size: 1.08rem; max-width: 40rem; }
+.section { display: grid; gap: 16px; }
+.section > h2 { font-size: 1.45rem; }
+.section-sub { font-size: .95rem; color: var(--muted); max-width: 40rem; }
+
+.bars { display: grid; gap: 18px; }
+.bar-row { display: grid; gap: 6px; }
+.bar-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.bar-name { font-weight: 600; font-size: .98rem; }
+.bar-val { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; color: var(--brand); }
+.bar-track { position: relative; height: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; }
+.bar-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 99px; background: var(--brand); transition: width 1s var(--ease); }
+.bar-mark { position: absolute; top: -5px; bottom: -5px; width: 3px; margin-left: -1.5px; background: var(--accent-fill); border-radius: 2px; }
+.bar-poles { display: flex; justify-content: space-between; gap: 12px; font-size: .82rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { display: inline-block; width: 18px; height: 8px; border-radius: 99px; background: var(--brand); }
+.legend i.mark { width: 3px; height: 16px; border-radius: 2px; background: var(--accent-fill); }
+.scale { display: flex; justify-content: space-between; font-family: var(--font-num); font-size: .75rem; color: var(--muted); padding-inline: 1px; }
+
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.panel h3 { font-size: 1.15rem; }
+.panel .dominant { font-size: .95rem; }
+.panel .dominant b { color: var(--brand); }
+.seg-list { display: grid; gap: 10px; }
+.seg { display: grid; grid-template-columns: 8.2rem 1fr 3rem; gap: 10px; align-items: center; font-size: .92rem; }
+.seg-track { height: 8px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.seg-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--brand); opacity: .55; transition: width .9s var(--ease); }
+.seg.is-top .seg-fill { opacity: 1; }
+.seg.is-top .seg-name { font-weight: 600; }
+.seg-pct { text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; color: var(--muted); }
+
+.levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 24px; }
+.level { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
+.pips { display: inline-flex; gap: 4px; align-items: center; }
+.pips i { width: 14px; height: 6px; border-radius: 2px; background: var(--line); }
+.pips i.on { background: var(--brand); }
+.pips em { font-style: normal; font-size: .82rem; color: var(--muted); margin-left: 6px; min-width: 2.6rem; }
+
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.list li { position: relative; padding-left: 20px; font-size: .98rem; }
+.list li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+.list.risks li::before { background: var(--accent-fill); border-radius: 1px; transform: rotate(45deg); }
+.list li b { font-weight: 600; }
+
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 14px; }
+.principle { border-top: 2px solid var(--brand); padding-top: 12px; font-size: .98rem; }
+
+.contract { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--shadow); padding: clamp(20px, 5vw, 40px); display: grid; gap: 18px; position: relative; }
+.contract::before { content: ""; position: absolute; inset: 8px; border: 1px solid var(--line); border-radius: 2px; pointer-events: none; }
+.contract-head { display: grid; gap: 4px; text-align: center; position: relative; }
+.contract-head h2 { font-size: clamp(1.35rem, 4vw, 1.7rem); }
+.contract-head p { font-size: .9rem; color: var(--muted); }
+.clauses { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; position: relative; }
+.clauses li { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: baseline; }
+.clause-n { font-family: var(--font-display); font-size: .82rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.clauses p { font-family: var(--font-display); font-size: 1.12rem; line-height: 1.5; }
+.sign { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; padding-top: 10px; position: relative; font-size: .85rem; color: var(--muted); }
+.sign div { flex: 1 1 12rem; border-top: 1px solid var(--muted); padding-top: 6px; }
+
+.closing { font-family: var(--font-display); font-size: clamp(1.25rem, 3.6vw, 1.6rem); line-height: 1.4; text-align: center; padding: 8px 0; max-width: 36rem; margin: 0 auto; text-wrap: balance; }
+.closing-sub { text-align: center; color: var(--muted); font-size: .95rem; max-width: 36rem; margin: 0 auto; }
+
+.actions { display: grid; gap: 12px; border-top: 1px solid var(--line); padding-top: 22px; }
+.actions .row { display: flex; flex-wrap: wrap; gap: 12px; }
+.status { font-size: .92rem; min-height: 1.4em; }
+.status.is-error { color: var(--danger); }
+.status.is-ok { color: var(--ok); }
+.fallback { display: grid; gap: 8px; }
+.fallback label { font-size: .9rem; font-weight: 600; }
+.fallback textarea { width: 100%; min-height: 14rem; resize: vertical; font-family: var(--font-num); font-size: .82rem; line-height: 1.5; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+
+/* Pie */
+.site-foot { border-top: 1px solid var(--line); padding-block: 20px 28px; font-size: .88rem; color: var(--muted); }
+.site-foot .wrap { display: grid; gap: 6px; }
+.site-foot strong { color: var(--ink); }
+
+/* Entrada suave de pantallas */
+.screen.is-entering { animation: fadeUp .45s var(--ease) both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 520px) {
+  body { font-size: 1rem; }
+  .quiz-nav { flex-direction: column-reverse; align-items: stretch; }
+  .quiz-nav .group { display: grid; grid-template-columns: 1fr 1.4fr; }
+  .quiz-nav .btn-ghost { align-self: center; }
+  .kbd-tip { display: none; }
+  .seg { grid-template-columns: 7rem 1fr 2.6rem; }
+  .actions .row .btn { flex: 1 1 100%; }
+  .cta-row .btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="26" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6 19 L11 13 L15 16 L22 8" fill="none" stroke="var(--accent-fill)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="22" cy="8" r="1.8" fill="var(--accent-fill)"/>
+      </svg>
+      <span>Inversor por Personalidad</span>
+    </div>
+    <span class="head-note">Herramienta educativa</span>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <!-- Anuncios para lectores de pantalla -->
+  <p class="sr-only" aria-live="polite" id="live"></p>
+
+  <!-- 1. Bienvenida -->
+  <section class="screen welcome" id="screen-welcome" aria-labelledby="welcome-title">
+    <div class="intro">
+      <p class="eyebrow">Test de autoconocimiento · 12 preguntas · unos 4 minutos</p>
+      <h1 id="welcome-title" tabindex="-1">¿Cómo decides cuando el resultado es incierto?</h1>
+      <p class="lead">Este test explora cómo te comportas ante la incertidumbre y qué estilo de inversión encaja con tu forma de ser.</p>
+      <p>Mide tus preferencias al tomar decisiones, tu reacción ante pérdidas y oscilaciones, tu necesidad de control, tu paciencia, tu curiosidad, la confianza en tu propio criterio y tu manera de aprender. Al terminar verás tu arquetipo inversor entre diez posibles, tus puntuaciones por dimensión y un contrato personal con tres reglas para decidir con más coherencia.</p>
+    </div>
+
+    <div class="measures-wrap">
+      <h2>Qué observa el test</h2>
+      <ul class="measures">
+        <li>Cómo tomas decisiones</li>
+        <li>Reacción ante pérdidas y oscilaciones</li>
+        <li>Necesidad de control y de reglas</li>
+        <li>Paciencia y constancia</li>
+        <li>Curiosidad y apertura a lo nuevo</li>
+        <li>Confianza en tu criterio</li>
+        <li>Estilo de aprendizaje</li>
+        <li>Rapidez de reacción emocional</li>
+      </ul>
+    </div>
+
+    <div class="notes">
+      <div class="note">
+        <strong>Tu privacidad, intacta</strong>
+        <p>No pedimos datos personales. Tus respuestas no se guardan ni se envían a ningún sitio: todo el cálculo ocurre en tu navegador y desaparece al cerrar la página.</p>
+      </div>
+      <div class="note disclaimer" role="note">
+        <strong>Aviso importante</strong>
+        <p>Esta aplicación es una herramienta educativa y de autoconocimiento. No constituye asesoramiento financiero, legal ni fiscal.</p>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <button class="btn btn-primary" id="btn-start" type="button">
+        Comenzar test
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="muted">No hay respuestas correctas ni incorrectas. Responde según lo que harías, no según lo que crees que deberías hacer.</span>
+    </div>
+  </section>
+
+  <!-- 2. Cuestionario -->
+  <section class="screen quiz" id="screen-quiz" aria-labelledby="q-title" hidden>
+    <div class="progress">
+      <div class="progress-top">
+        <p class="progress-label" id="progress-label">Pregunta 1 de 12</p>
+        <span class="kbd-tip">Atajos: <kbd>1</kbd>–<kbd>4</kbd> para elegir, <kbd>Intro</kbd> para avanzar</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Progreso del test" aria-valuemin="0" aria-valuemax="12" aria-valuenow="1" id="progressbar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <form class="card" id="quiz-form" novalidate>
+      <div class="q-area" id="q-area">
+        <fieldset id="q-fieldset" aria-describedby="q-hint">
+          <legend class="sr-only" id="q-legend"></legend>
+          <div style="display:grid; gap:10px; margin-bottom:22px;">
+            <p class="q-dimension" id="q-dimension"></p>
+            <h2 class="q-title" id="q-title" tabindex="-1"></h2>
+          </div>
+          <div class="options" id="options"></div>
+        </fieldset>
+        <p class="q-hint" id="q-hint">Elige una opción para continuar.</p>
+      </div>
+    </form>
+
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btn-reset" type="button">Reiniciar test</button>
+      <div class="group">
+        <button class="btn btn-secondary" id="btn-prev" type="button">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M14 9H4M8 5L4 9l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Atrás
+        </button>
+        <button class="btn btn-primary" id="btn-next" type="button" disabled aria-describedby="q-hint">Siguiente</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Resultados -->
+  <section class="screen results" id="screen-results" aria-labelledby="res-name" hidden>
+    <div class="res-hero">
+      <p class="eyebrow">Tu arquetipo inversor</p>
+      <h1 id="res-name" tabindex="-1"></h1>
+      <p class="slogan" id="res-slogan"></p>
+      <div class="affinity" id="res-affinity"></div>
+      <p class="secondary-note" id="res-secondary" hidden></p>
+    </div>
+
+    <p class="res-desc" id="res-desc"></p>
+
+    <div class="section">
+      <h2>Tus puntuaciones por dimensión</h2>
+      <p class="section-sub">Cada barra va de 0 a 100 y resume tus respuestas en esa dimensión. Ningún extremo es mejor que el otro: indican tendencias, no capacidades.</p>
+      <div class="legend" id="legend"></div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="split" id="cats"></div>
+
+    <div class="section">
+      <h2>Nivel relativo del arquetipo</h2>
+      <p class="section-sub" id="levels-sub"></p>
+      <div class="levels" id="levels"></div>
+    </div>
+
+    <div class="split">
+      <div class="panel">
+        <h3>Fortalezas como inversor</h3>
+        <ul class="list" id="res-strengths"></ul>
+      </div>
+      <div class="panel">
+        <h3>Tendencias a vigilar</h3>
+        <ul class="list risks" id="res-risks"></ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Principios prácticos para tu perfil</h2>
+      <div class="principles" id="res-principles"></div>
+    </div>
+
+    <article class="contract" aria-labelledby="contract-title">
+      <div class="contract-head">
+        <p class="eyebrow">Documento de uso personal</p>
+        <h2 id="contract-title">Contrato personal de inversión</h2>
+        <p>Tres reglas que me comprometo a seguir antes de cada decisión importante.</p>
+      </div>
+      <ol class="clauses" id="res-rules"></ol>
+      <div class="sign">
+        <div>Firma</div>
+        <div id="res-date">Fecha</div>
+      </div>
+    </article>
+
+    <p class="closing" id="res-closing"></p>
+    <p class="closing-sub">Tu ventaja no es predecir el mercado; es invertir de forma coherente con quien eres.</p>
+
+    <div class="actions">
+      <div class="row">
+        <button class="btn btn-primary" id="btn-copy" type="button">Copiar resultado</button>
+        <button class="btn btn-secondary" id="btn-download" type="button">Descargar como texto (.txt)</button>
+        <button class="btn btn-secondary" id="btn-repeat" type="button">Repetir el test</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+      <div class="fallback" id="fallback" hidden>
+        <label for="fallback-text">Texto del resultado (selecciónalo y cópialo manualmente)</label>
+        <textarea id="fallback-text" readonly></textarea>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p><strong>Esta aplicación es una herramienta educativa y de autoconocimiento. No constituye asesoramiento financiero, legal ni fiscal.</strong></p>
+    <p>No recomienda productos, no promete resultados y no recoge datos personales. Todo funciona en tu navegador, sin conexión.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+document.documentElement.lang = "es";
+
+/* =========================================================
+   1. DIMENSIONES
+   Continuas (0–100) y categóricas (reparto en %).
+   ========================================================= */
+const DIMS = [
+  { key: "vol",  name: "Tolerancia a pérdidas y oscilaciones", low: "Me inquietan las oscilaciones", high: "Convivo bien con ellas" },
+  { key: "ctl",  name: "Necesidad de control y reglas",        low: "Flexible, sin reglas fijas",     high: "Necesito un sistema claro" },
+  { key: "pac",  name: "Paciencia y orientación a largo plazo", low: "Busco señales pronto",          high: "Espero sin inquietud" },
+  { key: "ape",  name: "Apertura a lo nuevo y a la ambigüedad", low: "Prefiero lo conocido",          high: "Me atrae lo desconocido" },
+  { key: "imp",  name: "Impulsividad emocional",                low: "Actúo en frío",                 high: "Reacciono al momento" },
+  { key: "conf", name: "Confianza en el propio criterio",       low: "Me apoyo en otras opiniones",   high: "Decido por mi cuenta" },
+  { key: "simp", name: "Preferencia por la simplicidad",        low: "Disfruto la complejidad",       high: "Prefiero lo sencillo" },
+  { key: "est",  name: "Preferencia por resultados estables",   low: "Acepto incertidumbre por más",  high: "Prefiero lo estable" }
+];
+
+const CATS = {
+  r: { title: "Reacción ante caídas", keys: { vender: "Vender", mantener: "Mantener", comprar: "Comprar más", paralizar: "Paralizarse" },
+       explain: "Cómo tiendes a responder cuando algo pierde valor de forma brusca." },
+  d: { title: "Estilo de decisión", keys: { analitico: "Analítico", intuitivo: "Intuitivo", colaborativo: "Colaborativo", evitativo: "Evitativo" },
+       explain: "La vía por la que sueles llegar a una decisión cuando hay incertidumbre." }
+};
+
+/* =========================================================
+   2. CUESTIONARIO (12 preguntas, 4 opciones)
+   s = puntos en dimensiones continuas (−2 a +2)
+   r = reacción ante caídas, d = estilo de decisión
+   ========================================================= */
+const QUESTIONS = [
+  { topic: "Decisiones con incertidumbre",
+    text: "Cuando una decisión importante tiene un resultado incierto, ¿qué sueles hacer?",
+    options: [
+      { t: "Busco más información y ordeno las opciones.",         s: { ctl: 2, imp: -1, simp: -1 }, d: { analitico: 2 } },
+      { t: "Confío en mi intuición y decido rápido.",               s: { imp: 2, conf: 2, ape: 1, simp: 1 }, d: { intuitivo: 2 } },
+      { t: "Prefiero esperar hasta verlo más claro.",               s: { est: 1, vol: -1, imp: -1, pac: 1 }, d: { evitativo: 2 } },
+      { t: "Pido opinión a personas de confianza antes de decidir.", s: { conf: -2 }, d: { colaborativo: 2 } }
+    ] },
+  { topic: "Caídas de valor",
+    text: "Si algo en lo que has invertido pierde mucho valor de golpe, ¿cuál sería tu reacción más probable?",
+    options: [
+      { t: "Mantendría la calma y revisaría si ha cambiado algo esencial.", s: { vol: 1, imp: -2, pac: 1 }, r: { mantener: 3 }, d: { analitico: 1 } },
+      { t: "Me preocuparía y querría reducir lo que tengo ahí.",            s: { vol: -2, est: 2, imp: 1 }, r: { vender: 3 } },
+      { t: "Podría verlo como una oportunidad si mis motivos siguen en pie.", s: { vol: 2, conf: 1, pac: 1, est: -1 }, r: { comprar: 3 } },
+      { t: "Preferiría no mirar cómo evoluciona durante un tiempo.",       s: { vol: -1, imp: -1 }, r: { paralizar: 3 }, d: { evitativo: 1 } }
+    ] },
+  { topic: "Incomodidad",
+    text: "¿Qué te resulta más incómodo?",
+    options: [
+      { t: "Decidir sin tener suficiente información.",              s: { ctl: 2, ape: -1, imp: -1 }, d: { analitico: 1 } },
+      { t: "Seguir un plan que tarda mucho en dar resultados.",      s: { pac: -2, imp: 1, est: -1 } },
+      { t: "Ver cómo el valor de algo mío sube y baja con fuerza.",  s: { vol: -2, est: 2 } },
+      { t: "Depender de la opinión de otras personas.",              s: { conf: 2, ctl: 1 } }
+    ] },
+  { topic: "Lo nuevo",
+    text: "Ante una oportunidad nueva y poco convencional, ¿qué haces?",
+    options: [
+      { t: "Me atrae explorarla, aunque haya incertidumbre.",  s: { ape: 2, vol: 1, est: -1 } },
+      { t: "La miro con escepticismo antes de interesarme.",   s: { conf: 2, imp: -1 }, d: { analitico: 1 } },
+      { t: "Prefiero lo conocido y probado.",                  s: { ape: -2, est: 1, simp: 1 } },
+      { t: "Solo la considero si encaja en un sistema claro.", s: { ctl: 2, imp: -1 } }
+    ] },
+  { topic: "Progreso",
+    text: "¿Qué tipo de progreso te resulta más satisfactorio?",
+    options: [
+      { t: "Resultados estables y previsibles.",                       s: { est: 2, vol: -1 } },
+      { t: "Un resultado excepcional, aunque sea menos probable.",      s: { est: -2, vol: 2, ape: 1 } },
+      { t: "Construir algo poco a poco y con constancia.",              s: { pac: 2, ctl: 1, simp: 1 } },
+      { t: "Aprender y descubrir cosas nuevas, aunque me equivoque.",   s: { ape: 2, simp: -1 } }
+    ] },
+  { topic: "Lo que pesa al decidir",
+    text: "Cuando tomas una decisión con dinero de por medio, ¿qué pesa más?",
+    options: [
+      { t: "La lógica, los datos y los posibles escenarios.",  s: { ctl: 1, simp: -1, imp: -1 }, d: { analitico: 2 } },
+      { t: "Mi intuición y lo que he vivido antes.",           s: { conf: 1, imp: 1 }, d: { intuitivo: 2 } },
+      { t: "La tranquilidad de no cometer un error grave.",    s: { vol: -2, est: 1 }, d: { evitativo: 1 } },
+      { t: "La opinión de personas en las que confío.",        s: { conf: -2 }, d: { colaborativo: 2 } }
+    ] },
+  { topic: "Cuando algo va mal",
+    text: "Si una decisión tuya empieza a ir mal, ¿qué haces normalmente?",
+    options: [
+      { t: "Reviso mis supuestos y solo cambio si hay pruebas sólidas.", s: { imp: -2, pac: 1 }, r: { mantener: 1 }, d: { analitico: 1 } },
+      { t: "Actúo rápido para corregir el rumbo.",                      s: { imp: 2, pac: -1 }, r: { vender: 1 } },
+      { t: "Mantengo el rumbo si sigo creyendo en la idea.",            s: { conf: 1, pac: 1, vol: 1 }, r: { mantener: 1, comprar: 1 } },
+      { t: "Dudo y voy aplazando la decisión.",                         s: {}, r: { paralizar: 2 }, d: { evitativo: 2 } }
+    ] },
+  { topic: "Aprendizaje",
+    text: "¿Cómo prefieres aprender sobre un tema nuevo?",
+    options: [
+      { t: "Con un método ordenado, paso a paso.",                  s: { ctl: 2, simp: 1 } },
+      { t: "Probando y experimentando por mi cuenta.",              s: { ape: 1, imp: 1, conf: 1 }, d: { intuitivo: 1 } },
+      { t: "Escuchando a especialistas y contrastando fuentes.",    s: { conf: -1 }, d: { colaborativo: 1 } },
+      { t: "Leyendo mucho antes de hacer nada.",                    s: { pac: 1, imp: -1, simp: -1 }, d: { analitico: 1 } }
+    ] },
+  { topic: "Autorretrato",
+    text: "¿Qué frase te describe mejor?",
+    options: [
+      { t: "«Prefiero un camino ordenado y bien definido.»",                   s: { ctl: 2, simp: 1, ape: -1 } },
+      { t: "«Me atrae explorar lo desconocido.»",                              s: { ape: 2, vol: 1 } },
+      { t: "«No me gusta depender de la suerte.»",                             s: { est: 1, ctl: 1, vol: -1 } },
+      { t: "«Prefiero decidir por mí mismo, aunque vaya contra la mayoría.»",  s: { conf: 2 } }
+    ] },
+  { topic: "Información contradictoria",
+    text: "Cuando hay mucha información contradictoria, ¿qué haces?",
+    options: [
+      { t: "Me hago un sistema para comparar las opciones.",   s: { ctl: 2 }, d: { analitico: 1 } },
+      { t: "Sigo mi criterio y decido sin complicarme.",       s: { conf: 1, simp: 2, imp: 1 }, d: { intuitivo: 1 } },
+      { t: "Me tomo más tiempo y busco más datos.",            s: { simp: -1, imp: -1 }, d: { evitativo: 1, analitico: 1 } },
+      { t: "Pregunto a personas con experiencia.",             s: { conf: -1 }, d: { colaborativo: 2 } }
+    ] },
+  { topic: "Cambiar de opinión",
+    text: "¿Qué te haría cambiar una decisión que ya has tomado?",
+    options: [
+      { t: "Una prueba clara de que mis supuestos eran incorrectos.",   s: { imp: -1, conf: 1 }, d: { analitico: 1 } },
+      { t: "Una emoción intensa o la sensación de que algo va mal.",    s: { imp: 2, vol: -1 }, d: { intuitivo: 1 } },
+      { t: "Una recomendación convincente de alguien de confianza.",    s: { conf: -2 }, d: { colaborativo: 1 } },
+      { t: "Que aparezca una alternativa claramente mejor.",            s: { ape: 1, pac: -1 } }
+    ] },
+  { topic: "Lo más valioso",
+    text: "Al invertir, ¿qué experiencia te resulta más valiosa?",
+    options: [
+      { t: "Tener un proceso claro y repetible.",                    s: { ctl: 2, pac: 1, simp: 1 } },
+      { t: "Aprender de los errores y ajustar el enfoque.",          s: { ape: 1, pac: 1 } },
+      { t: "Evitar pérdidas grandes y dormir tranquilo.",            s: { vol: -2, est: 2 } },
+      { t: "Detectar oportunidades antes que los demás.",            s: { vol: 1, conf: 1, imp: 1, ape: 1, est: -1 } }
+    ] }
+];
+
+/* =========================================================
+   3. ARQUETIPOS
+   p = valores típicos (0–100) en cada dimensión
+   w = dimensiones que definen el perfil (pesan el doble)
+   r / d = afinidad con reacciones y estilos (suman 1)
+   ========================================================= */
+const ARCHETYPES = [
+  {
+    id: "arquitecto", name: "El Arquitecto", slogan: "Primero el plano, después la obra.",
+    p: { vol: 50, ctl: 92, pac: 65, ape: 35, imp: 20, conf: 55, simp: 55, est: 58 }, w: ["ctl", "imp"],
+    r: { mantener: 1 }, d: { analitico: 1 },
+    desc: "Para ti, invertir es diseñar un sistema antes de ponerlo en marcha. Te sientes cómodo cuando las decisiones siguen criterios definidos de antemano: qué entra, qué sale, cuándo se revisa y por qué. La incertidumbre te molesta menos que la improvisación; prefieres una regla imperfecta aplicada con constancia a una corazonada brillante que no sabes justificar. Buscas estructura, coherencia interna y procesos que puedan repetirse y evaluarse, y esa claridad te protege de muchas decisiones impulsivas. El reto aparece cuando la realidad no encaja en el plano. Entonces conviene distinguir entre ajustar el diseño con criterio y aferrarse a él por la tranquilidad que da sentir que todo está bajo control.",
+    strengths: [
+      "Conviertes ideas difusas en criterios concretos y comprobables.",
+      "Mantienes la coherencia cuando el entorno se vuelve ruidoso.",
+      "Documentas y revisas, lo que te permite aprender de tus propias decisiones.",
+      "Reduces el peso de la emoción del momento gracias a reglas fijadas en frío."
+    ],
+    risks: [
+      ["Ilusión de control", "creer que un buen sistema elimina la incertidumbre, cuando en realidad solo la ordena."],
+      ["Rigidez", "mantener una regla después de que haya dejado de tener sentido."],
+      ["Sobreingeniería", "añadir capas de reglas que complican más de lo que aportan."],
+      ["Sesgo de confirmación", "leer los datos de forma que encajen con el sistema que ya tienes."]
+    ],
+    principles: [
+      "Resume tu sistema en una sola página. Si no cabe, probablemente sea demasiado complejo para sostenerlo en momentos de tensión.",
+      "Separa las reglas de ejecución (qué haces) de las reglas de revisión (cuándo cuestionas el sistema) y respeta ambas.",
+      "Evalúa el proceso, no solo el resultado: una buena decisión puede salir mal y una mala puede salir bien por azar.",
+      "Fija las revisiones en el calendario en lugar de revisar cada vez que algo te inquieta."
+    ],
+    rules: [
+      "Definiré por escrito, antes de invertir, qué situación concreta me haría revisar una decisión.",
+      "No añadiré una regla nueva sin eliminar o simplificar otra que ya exista.",
+      "Solo revisaré mi sistema en las fechas que haya fijado, salvo que se cumpla una condición de revisión ya escrita."
+    ],
+    closing: "Tu ventaja no es predecir el mercado; es tener un plano claro y saber cuándo redibujarlo."
+  },
+  {
+    id: "explorador", name: "El Explorador", slogan: "Lo desconocido es territorio por recorrer.",
+    p: { vol: 68, ctl: 32, pac: 45, ape: 92, imp: 55, conf: 58, simp: 35, est: 25 }, w: ["ape", "est"],
+    r: { comprar: .6, mantener: .4 }, d: { intuitivo: .6, analitico: .4 },
+    desc: "Te mueve la curiosidad. Disfrutas entendiendo ideas nuevas, conectando conceptos de ámbitos distintos y moviéndote por terrenos donde todavía no hay respuestas cerradas. La ambigüedad no te paraliza: la ves como espacio para aprender. En inversión, eso te da una mirada abierta y capacidad para detectar cambios antes de que se conviertan en consenso. También te expone a una tentación conocida, que es confundir lo interesante con lo conveniente. Lo novedoso estimula, pero no siempre está justificado. Tu mejor versión combina esa apertura con un filtro que separa la exploración, que puede ser amplia y barata, del compromiso, que debería ser selectivo y meditado.",
+    strengths: [
+      "Aprendes deprisa y te adaptas cuando cambian las circunstancias.",
+      "Toleras bien no tener todas las respuestas antes de empezar a pensar.",
+      "Detectas ideas y cambios que otras personas pasan por alto.",
+      "Tratas los errores como información, no como un fracaso personal."
+    ],
+    risks: [
+      ["Sesgo de novedad", "dar más valor a algo solo porque es nuevo."],
+      ["Dispersión", "abrir demasiados frentes y no seguir ninguno con la atención suficiente."],
+      ["Atracción por las narrativas", "dejarte convencer por una buena historia más que por las pruebas."],
+      ["Rotación excesiva", "cambiar de idea cada vez que aparece otra más estimulante."]
+    ],
+    principles: [
+      "Reserva una parte pequeña para explorar y deja que la mayor siga un enfoque estable y poco emocionante.",
+      "Antes de comprometerte con una idea nueva, escribe qué tendría que ser cierto para que funcione.",
+      "Limita el número de ideas activas a la vez: añadir una implica cerrar otra.",
+      "Distingue entre estudiar algo y actuar sobre ello. Puedes investigar todo lo que quieras sin decidir nada."
+    ],
+    rules: [
+      "Dejaré pasar al menos una semana entre descubrir una idea nueva y actuar sobre ella.",
+      "Explicaré cada idea en tres frases sencillas antes de dedicarle dinero; si no puedo, seguiré estudiando.",
+      "Llevaré un registro de ideas exploradas y descartadas para ver mis patrones con perspectiva."
+    ],
+    closing: "Tu ventaja no es llegar el primero a todo; es aprender más rápido y comprometerte con más cuidado."
+  },
+  {
+    id: "centinela", name: "El Centinela", slogan: "La calma también es una estrategia.",
+    p: { vol: 12, ctl: 62, pac: 50, ape: 25, imp: 48, conf: 45, simp: 65, est: 92 }, w: ["vol", "est"],
+    r: { vender: .65, paralizar: .35 }, d: { evitativo: .5, analitico: .25, colaborativo: .25 },
+    desc: "Valoras la estabilidad y te importa mucho evitar errores graves. Ver oscilaciones fuertes te genera un malestar real, y prefieres avanzar con paso firme antes que arriesgarte a retroceder de golpe. Esa sensibilidad a las pérdidas no es una debilidad: es información sobre cómo funcionas, y conocerla te permite diseñar un enfoque que puedas sostener sin sufrir. Tu fortaleza está en la prudencia y en la capacidad de anticipar lo que puede salir mal. Tu reto está en que el miedo a perder no te lleve a decidir en el peor momento ni a esquivar por completo cualquier incertidumbre, porque toda decisión, incluida la de no actuar, tiene consecuencias.",
+    strengths: [
+      "Piensas en los escenarios adversos antes de comprometerte.",
+      "Rara vez te dejas arrastrar por la euforia colectiva.",
+      "Valoras la constancia por encima del brillo puntual.",
+      "Conoces tus límites emocionales y eso te permite respetarlos."
+    ],
+    risks: [
+      ["Aversión a las pérdidas", "sentir una pérdida con más intensidad que una ganancia equivalente y reaccionar en consecuencia."],
+      ["Venta por alivio", "deshacer una decisión para calmar el malestar, no porque hayan cambiado los motivos."],
+      ["Sesgo del statu quo", "no actuar aunque haya razones claras para hacerlo."],
+      ["Aversión miope a las pérdidas", "mirar la evolución con tanta frecuencia que percibes más riesgo del que hay."]
+    ],
+    principles: [
+      "Diseña tu enfoque pensando en tu peor momento emocional, no en el mejor. Si no podrías sostenerlo con nervios, ajústalo antes.",
+      "Reduce la frecuencia con la que consultas la evolución: ver menos oscilaciones reduce la tentación de reaccionar.",
+      "Define de antemano qué nivel de oscilación consideras aceptable y qué harás si se supera.",
+      "Recuerda que no actuar también es una decisión con efectos, y evalúala con el mismo cuidado."
+    ],
+    rules: [
+      "No tomaré decisiones importantes el mismo día de una caída fuerte; esperaré al menos 72 horas.",
+      "Consultaré la evolución con una frecuencia fija y limitada, no cada vez que sienta inquietud.",
+      "Antes de vender por preocupación, escribiré qué ha cambiado en mis motivos originales."
+    ],
+    closing: "Tu ventaja no es evitar toda pérdida; es elegir un camino que puedas recorrer sin abandonarlo."
+  },
+  {
+    id: "estratega", name: "El Estratega Sereno", slogan: "Pensar despacio, actuar poco, sostener mucho.",
+    p: { vol: 68, ctl: 60, pac: 92, ape: 50, imp: 8, conf: 65, simp: 50, est: 48 }, w: ["pac", "imp"],
+    r: { mantener: .7, comprar: .3 }, d: { analitico: 1 },
+    desc: "Combinas análisis y templanza. Te tomas tu tiempo para entender una situación, pero una vez decides, no necesitas reaccionar a cada movimiento. Sabes que el ruido diario rara vez cambia lo esencial y que muchas de las mejores decisiones consisten en no hacer nada. Esa serenidad te permite atravesar periodos incómodos sin perder el hilo y convertir la paciencia en una ventaja. Tu riesgo está en el otro extremo: que la calma derive en inercia, que la convicción se endurezca y dejes de escuchar señales que sí son relevantes. La diferencia entre paciencia y terquedad está en comprobar con honestidad si los motivos que te llevaron a decidir siguen siendo válidos.",
+    strengths: [
+      "Distingues bien entre el ruido y los cambios de fondo.",
+      "Toleras periodos largos sin resultados visibles.",
+      "Decides con poca reactividad emocional.",
+      "Mantienes la visión de conjunto en lugar de fijarte en cada movimiento."
+    ],
+    risks: [
+      ["Exceso de confianza en la propia tesis", "dar por hecho que la paciencia siempre acaba recompensada."],
+      ["Inercia", "aplazar revisiones necesarias porque todo parece en orden."],
+      ["Anclaje", "aferrarte a cifras o ideas iniciales aunque haya información nueva."],
+      ["Distancia excesiva", "alejarte tanto del día a día que pases por alto un cambio de fondo."]
+    ],
+    principles: [
+      "Escribe la tesis de cada decisión y los hechos que la invalidarían. Revisa esos hechos, no el precio.",
+      "Programa revisiones espaciadas y profundas en lugar de seguimientos frecuentes y superficiales.",
+      "Busca activamente argumentos contrarios a tus decisiones de forma periódica.",
+      "Trata la paciencia como una herramienta, no como una garantía: mide si tus motivos siguen vigentes."
+    ],
+    rules: [
+      "Para cada decisión anotaré tres señales concretas que me harían cambiar de opinión.",
+      "Una vez al año buscaré deliberadamente el mejor argumento en contra de mis decisiones principales.",
+      "Revisaré mis decisiones por cambios en los motivos, nunca solo por movimientos del precio."
+    ],
+    closing: "Tu ventaja no es predecir el mercado; es no necesitar hacerlo para mantener el rumbo."
+  },
+  {
+    id: "decisor", name: "El Decisor Rápido", slogan: "Decidir bien no siempre exige decidir despacio.",
+    p: { vol: 60, ctl: 28, pac: 28, ape: 60, imp: 82, conf: 82, simp: 78, est: 42 }, w: ["imp", "simp", "conf"],
+    r: { vender: .6, comprar: .4 }, d: { intuitivo: 1 },
+    desc: "Tienes facilidad para actuar cuando otras personas todavía dudan. Confías en tu lectura de las situaciones, te sientes cómodo con información incompleta y prefieres corregir sobre la marcha antes que quedarte quieto esperando una certeza que nunca llega. Esa agilidad es útil: reduce la parálisis y te permite moverte cuando la claridad llega tarde. Pero en inversión la velocidad tiene un coste oculto, porque cuantas más decisiones tomas, más ocasiones das a la emoción del momento para colarse. Tu reto no es frenar tu forma de ser, sino canalizarla: decidir deprisa qué merece tu atención y algo más despacio qué vas a ejecutar. La intuición rinde mejor dentro de un marco.",
+    strengths: [
+      "Superas con facilidad la parálisis por análisis.",
+      "Actúas con determinación y asumes la responsabilidad de lo que decides.",
+      "Corriges el rumbo sin apego excesivo a decisiones pasadas.",
+      "Lees el contexto con rapidez y sintetizas lo importante."
+    ],
+    risks: [
+      ["Exceso de confianza", "sobrestimar la precisión de tu intuición."],
+      ["Exceso de actividad", "mover más de lo necesario y acumular costes y errores pequeños."],
+      ["Sesgo de disponibilidad", "dar demasiado peso a lo último que has visto u oído."],
+      ["Emoción con apariencia de intuición", "tomar por corazonada lo que en realidad es nervio o entusiasmo."]
+    ],
+    principles: [
+      "Separa la velocidad de pensar de la velocidad de ejecutar: piensa rápido y ejecuta con un pequeño retraso deliberado.",
+      "Limita el número de decisiones que tomas en cada periodo; la escasez obliga a priorizar.",
+      "Lleva un diario breve: qué decidiste, qué esperabas y qué ocurrió. Así calibras tu intuición con datos.",
+      "Mantén una parte estable que no tocas y concentra tu iniciativa en un espacio acotado."
+    ],
+    rules: [
+      "Dejaré pasar al menos 24 horas entre decidir y ejecutar cualquier movimiento relevante.",
+      "Anotaré en una línea el motivo de cada decisión antes de ejecutarla.",
+      "Fijaré un número máximo de movimientos por trimestre y lo respetaré."
+    ],
+    closing: "Tu ventaja no es la velocidad; es saber cuándo usarla."
+  },
+  {
+    id: "constructor", name: "El Constructor Disciplinado", slogan: "Lo que se repite, se acumula.",
+    p: { vol: 55, ctl: 78, pac: 90, ape: 32, imp: 22, conf: 50, simp: 85, est: 60 }, w: ["pac", "simp"],
+    r: { mantener: 1 }, d: { analitico: .5, colaborativo: .25, intuitivo: .25 },
+    desc: "Crees en el poder de los hábitos. No buscas el gran acierto, sino la suma de muchos pasos pequeños dados con regularidad. Te sientes bien cuando tienes una rutina clara y la cumples, y entiendes que la constancia suele pesar más que la brillantez puntual. Prefieres lo sencillo y repetible a lo sofisticado, porque sabes que lo que no se puede mantener acaba abandonándose. Esa disciplina es un activo enorme frente a la tentación de cambiar de enfoque cada poco. El riesgo es que la rutina se vuelva tan automática que nunca la revises, o que vivas un tropiezo puntual como un fracaso que invalida todo el esfuerzo anterior.",
+    strengths: [
+      "Mantienes hábitos durante mucho tiempo sin necesitar motivación extra.",
+      "Prefieres la sencillez, lo que reduce errores y desgaste al decidir.",
+      "No necesitas ver resultados inmediatos para seguir adelante.",
+      "Resistes bien las modas y los cambios bruscos de enfoque."
+    ],
+    risks: [
+      ["Piloto automático", "dejar de comprobar si la rutina sigue teniendo sentido."],
+      ["Pensamiento de todo o nada", "abandonar el plan entero tras un solo tropiezo."],
+      ["Sesgo del statu quo", "resistirte a mejoras razonables por apego a la costumbre."],
+      ["Rigidez ante lo excepcional", "no ajustar nada cuando una circunstancia lo pide de verdad."]
+    ],
+    principles: [
+      "Automatiza lo que se pueda automatizar y reserva tu energía para revisar, no para ejecutar.",
+      "Mide si cumples el hábito, no solo los resultados de cada momento.",
+      "Programa una revisión del sistema al año, aunque todo parezca funcionar.",
+      "Define una versión mínima del plan para épocas difíciles, en lugar de abandonarlo."
+    ],
+    rules: [
+      "Mantendré mi rutina sin cambios salvo en la revisión anual programada.",
+      "Si me salto un paso, retomaré el plan en el siguiente ciclo sin intentar compensarlo de golpe.",
+      "Antes de cambiar el método, escribiré qué problema concreto resuelve el cambio."
+    ],
+    closing: "Tu ventaja no es acertar una vez; es repetir lo correcto muchas veces."
+  },
+  {
+    id: "independiente", name: "El Independiente Crítico", slogan: "Escuchar a todos, decidir por cuenta propia.",
+    p: { vol: 60, ctl: 60, pac: 62, ape: 45, imp: 25, conf: 95, simp: 45, est: 45 }, w: ["conf", "conf"],
+    r: { mantener: .5, comprar: .5 }, d: { analitico: 1 },
+    desc: "Desconfías de las ideas que se repiten sin examen. Cuando todo el mundo opina lo mismo, tu primera reacción es preguntar por qué. Analizas, contrastas y te formas un criterio propio, y no te incomoda ir contra la mayoría si tus razones son sólidas. Esa independencia te protege del contagio emocional que mueve a las multitudes y te permite mirar con frialdad lo que otros contemplan con entusiasmo o con pánico. Su contrapartida es que el escepticismo puede convertirse en una forma de terquedad, y que la satisfacción de llevar la contraria llegue a pesar más que las pruebas. Pensar por tu cuenta es valioso; pensar distinto por sistema, bastante menos.",
+    strengths: [
+      "Resistes la presión social y el efecto rebaño.",
+      "Examinas las ideas con rigor antes de aceptarlas.",
+      "Mantienes la calma cuando el ambiente se vuelve eufórico o pesimista.",
+      "Asumes plenamente la autoría de tus decisiones."
+    ],
+    risks: [
+      ["Oposición sistemática", "llevar la contraria al consenso por costumbre, aunque a veces el consenso acierte."],
+      ["Exceso de confianza", "dar más fiabilidad a tu análisis de la que ha demostrado tener."],
+      ["Sesgo de confirmación", "buscar solo los datos que refuerzan tu postura escéptica."],
+      ["Aislamiento", "dejar de exponer tus ideas a críticas de calidad."]
+    ],
+    principles: [
+      "Separa la pregunta «¿qué piensa la mayoría?» de «¿qué dicen las pruebas?». A veces coinciden.",
+      "Busca a una o dos personas competentes capaces de rebatir tus ideas con argumentos.",
+      "Escribe tus razones antes de decidir, para poder revisarlas después sin reinterpretarlas.",
+      "Al analizar un error, distingue si falló tu información o tu interpretación."
+    ],
+    rules: [
+      "Antes de decidir contra la mayoría, escribiré los tres mejores argumentos a su favor.",
+      "Compartiré mis decisiones importantes con alguien capaz de cuestionarlas y escucharé sus objeciones sin rebatirlas en el momento.",
+      "Revisaré cada error para separar lo que se debió a mis datos de lo que se debió a mi interpretación."
+    ],
+    closing: "Tu ventaja no es llevar la contraria; es pensar por tu cuenta y revisar tus ideas con la misma exigencia."
+  },
+  {
+    id: "colaborador", name: "El Colaborador Prudente", slogan: "Dos miradas ven más que una.",
+    p: { vol: 35, ctl: 50, pac: 55, ape: 45, imp: 40, conf: 10, simp: 58, est: 70 }, w: ["conf", "conf"],
+    r: { mantener: .5, vender: .5 }, d: { colaborativo: 1 },
+    desc: "Para ti, decidir bien también es decidir acompañado. Te gusta contrastar tus ideas con personas en las que confías, escuchar perspectivas distintas y llegar a una conclusión después de mirar el asunto desde varios ángulos. Eso te ayuda a evitar errores grandes y a moderar decisiones extremas. Sueles preferir caminos razonables a apuestas arriesgadas, y valoras sentirte respaldado. El reto es asegurarte de que esas opiniones suman criterio y no lo sustituyen: que escuchas para pensar mejor, no para repartir la responsabilidad, y que eliges bien a quién consultas. Una buena red de contraste es una ventaja; una red mal elegida puede amplificar el ruido en lugar de filtrarlo.",
+    strengths: [
+      "Contrastas antes de decidir, lo que filtra muchas ideas débiles.",
+      "Evitas posiciones extremas y riesgos desproporcionados.",
+      "Integras perspectivas distintas con facilidad.",
+      "Mantienes la humildad intelectual y reconoces lo que no sabes."
+    ],
+    risks: [
+      ["Prueba social", "dar algo por bueno porque otros lo dicen o lo hacen."],
+      ["Sesgo de autoridad", "aceptar opiniones por quién las dice más que por sus argumentos."],
+      ["Dependencia de la validación", "costarte decidir sin el visto bueno de alguien."],
+      ["Contagio emocional", "absorber el miedo o la euforia de tu entorno."]
+    ],
+    principles: [
+      "Elige tus fuentes por su criterio y su independencia, no por su cercanía o por la seguridad con la que hablan.",
+      "Escribe tu propia opinión antes de consultar y compárala después.",
+      "Pregunta «¿por qué?» y «¿qué te haría cambiar de opinión?», no solo «¿qué harías tú?».",
+      "Comprueba si quien te aconseja tiene algún interés en lo que decidas."
+    ],
+    rules: [
+      "Escribiré mi propia conclusión antes de pedir opinión a nadie.",
+      "Consultaré al menos una fuente que piense distinto que mi entorno habitual.",
+      "No cambiaré una decisión por una recomendación sin entender y anotar el argumento que la sostiene."
+    ],
+    closing: "Tu ventaja no es saberlo todo; es rodearte de buen criterio sin ceder el tuyo."
+  },
+  {
+    id: "optimista", name: "El Optimista Dinámico", slogan: "La energía empuja; el criterio dirige.",
+    p: { vol: 90, ctl: 30, pac: 40, ape: 75, imp: 70, conf: 75, simp: 55, est: 10 }, w: ["vol", "est"],
+    r: { comprar: 1 }, d: { intuitivo: 1 },
+    desc: "Tienes una actitud proactiva y confiada. Ves posibilidades donde otras personas ven obstáculos, toleras bien la incertidumbre y te atraen los resultados ambiciosos aunque no estén garantizados. Esa energía te ayuda a actuar, a aprender rápido y a no dejarte bloquear por el miedo, algo valioso cuando abunda el exceso de cautela. La contrapartida es conocida: el optimismo tiende a quitar peso a los escenarios adversos y a sobrestimar la propia capacidad de acertar. Tu objetivo no es apagar ese impulso, sino darle estructura. Con límites claros, revisiones honestas y un plan escrito para cuando las cosas salgan mal, tu energía se convierte en una ventaja sostenible.",
+    strengths: [
+      "Toleras bien la incertidumbre y las oscilaciones.",
+      "Mantienes la motivación incluso después de resultados adversos.",
+      "Actúas con iniciativa y aprovechas los momentos de cambio.",
+      "Aprendes deprisa gracias a tu disposición a probar."
+    ],
+    risks: [
+      ["Sobreconfianza", "sobrestimar la probabilidad de que las cosas salgan bien."],
+      ["Sesgo optimista", "dar poco peso a los escenarios negativos."],
+      ["Atribución asimétrica", "atribuir los aciertos a tu habilidad y los errores a la mala suerte."],
+      ["Escalada del compromiso", "aumentar lo apostado para recuperar lo perdido."]
+    ],
+    principles: [
+      "Antes de cada decisión, haz un análisis «premortem»: imagina que salió mal y escribe por qué.",
+      "Fija un tamaño máximo para cada decisión y respétalo, sobre todo cuando más entusiasmo sientas.",
+      "Lleva la cuenta de aciertos y errores con el mismo rigor.",
+      "Distingue entre confiar en tu proceso y tener certeza sobre el resultado."
+    ],
+    rules: [
+      "Antes de cada decisión escribiré el escenario negativo más probable y qué haré si ocurre.",
+      "Nunca aumentaré lo invertido en una idea solo para recuperar una pérdida.",
+      "Cuando note euforia, esperaré un día completo antes de actuar."
+    ],
+    closing: "Tu ventaja no es la certeza; es la energía de actuar con límites bien puestos."
+  },
+  {
+    id: "perfeccionista", name: "El Perfeccionista Cauteloso", slogan: "Entender del todo antes de dar el paso.",
+    p: { vol: 30, ctl: 82, pac: 55, ape: 32, imp: 18, conf: 42, simp: 15, est: 72 }, w: ["simp", "ctl"],
+    r: { paralizar: .7, mantener: .3 }, d: { evitativo: .5, analitico: .5 },
+    desc: "Eres exigente con la calidad de tus decisiones. Te gusta comprender cada detalle, comparar alternativas con minuciosidad y no avanzar hasta sentir que lo tienes claro. Ese rigor te protege de errores por descuido y de decisiones apresuradas. Sin embargo, al invertir la claridad total casi nunca llega: siempre falta información y siempre hay variables que nadie controla. Por eso tu mayor riesgo no suele ser equivocarte, sino quedarte esperando indefinidamente el momento perfecto. Aprender a decidir con información suficiente, en lugar de completa, es tu gran palanca de mejora. Tu exigencia rinde de verdad cuando se pone al servicio de la acción y deja de sustituirla.",
+    strengths: [
+      "Analizas en profundidad y detectas detalles que otros pasan por alto.",
+      "Evitas los errores por precipitación.",
+      "Tienes presentes los riesgos antes de comprometerte.",
+      "Tus decisiones suelen estar bien documentadas y fundamentadas."
+    ],
+    risks: [
+      ["Parálisis por análisis", "aplazar decisiones esperando una certeza que no llegará."],
+      ["Aversión al arrepentimiento", "evitar decidir para no sentir que te equivocaste."],
+      ["Sobrecarga de información", "acumular datos que ya no mejoran la decisión."],
+      ["Sesgo de omisión", "percibir que no actuar es menos arriesgado de lo que realmente es."]
+    ],
+    principles: [
+      "Define antes de investigar qué información necesitas para decidir, y detente cuando la tengas.",
+      "Pon fecha límite a cada análisis: decidir a tiempo con un 80 % de claridad suele ser mejor que no decidir.",
+      "Divide las decisiones grandes en pasos pequeños y graduales para reducir la presión de acertar.",
+      "Evalúa el coste de no decidir con el mismo rigor que el coste de equivocarte."
+    ],
+    rules: [
+      "Fijaré una fecha límite para cada decisión y ese día decidiré con la información disponible.",
+      "Limitaré mi lista de criterios a cinco puntos esenciales.",
+      "Ejecutaré las decisiones grandes en varias etapas en lugar de esperar al momento perfecto."
+    ],
+    closing: "Tu ventaja no es tenerlo todo claro; es decidir bien con lo suficiente."
+  }
+];
+
+/* =========================================================
+   4. CÁLCULO
+   ========================================================= */
+
+/* Media y desviación de cada dimensión sobre todas las combinaciones posibles de respuestas.
+   Sirven para normalizar a 0–100 como posición relativa (50 = punto medio del test),
+   de modo que ninguna dimensión quede comprimida por tener más o menos preguntas asociadas. */
+const STATS = (() => {
+  const out = {};
+  DIMS.forEach(({ key }) => {
+    let mean = 0, variance = 0;
+    QUESTIONS.forEach(q => {
+      const vals = q.options.map(o => (o.s && o.s[key]) || 0);
+      const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+      mean += m;
+      variance += vals.reduce((a, b) => a + (b - m) * (b - m), 0) / vals.length;
+    });
+    out[key] = { mean, sd: Math.sqrt(variance) || 1 };
+  });
+  return out;
+})();
+
+/* Función de distribución normal (aproximación de Abramowitz-Stegun) */
+function normCdf(z) {
+  const t = 1 / (1 + 0.3275911 * Math.abs(z) / Math.SQRT2);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z / 2);
+  return z >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+}
+
+function computeProfile(answers) {
+  const raw = {}; DIMS.forEach(d => raw[d.key] = 0);
+  const cat = { r: {}, d: {} };
+  Object.keys(CATS).forEach(c => Object.keys(CATS[c].keys).forEach(k => cat[c][k] = 0));
+
+  answers.forEach((idx, qi) => {
+    const o = QUESTIONS[qi].options[idx];
+    if (!o) return;
+    Object.entries(o.s || {}).forEach(([k, v]) => raw[k] += v);
+    ["r", "d"].forEach(c => Object.entries(o[c] || {}).forEach(([k, v]) => cat[c][k] += v));
+  });
+
+  // Normalización 0–100 (posición relativa)
+  const scores = {};
+  DIMS.forEach(({ key }) => {
+    const { mean, sd } = STATS[key];
+    scores[key] = Math.max(0, Math.min(100, Math.round(normCdf((raw[key] - mean) / sd) * 100)));
+  });
+
+  // Reparto porcentual de las categóricas
+  const shares = {};
+  Object.keys(cat).forEach(c => {
+    const total = Object.values(cat[c]).reduce((a, b) => a + b, 0);
+    const n = Object.keys(cat[c]).length;
+    shares[c] = {};
+    Object.keys(cat[c]).forEach(k => shares[c][k] = total ? cat[c][k] / total : 1 / n);
+  });
+
+  // Afinidad con cada arquetipo: distancia ponderada (80 %) + coincidencia de reacción y estilo (20 %)
+  const ranking = ARCHETYPES.map(a => {
+    let sum = 0, wsum = 0;
+    DIMS.forEach(({ key }) => {
+      const w = 1 + a.w.filter(x => x === key).length; // dimensiones clave pesan más
+      sum += w * Math.pow(scores[key] - a.p[key], 2);
+      wsum += w;
+    });
+    const dist = Math.sqrt(sum / wsum);                       // 0–100
+    const affR = Object.entries(a.r).reduce((s, [k, v]) => s + v * shares.r[k], 0);
+    const affD = Object.entries(a.d).reduce((s, [k, v]) => s + v * shares.d[k], 0);
+    const affinity = 0.8 * (100 - dist) + 10 * affR + 10 * affD;
+    return { a, affinity: Math.max(0, Math.min(100, affinity)) };
+  }).sort((x, y) => y.affinity - x.affinity);
+
+  const top = ranking[0], second = ranking[1];
+  const close = top.affinity - second.affinity < 1.5; // empate técnico: se muestra el segundo perfil
+  return { scores, shares, ranking, top: top.a, second: close ? second.a : null };
+}
+
+/* =========================================================
+   5. ESTADO E INTERFAZ
+   ========================================================= */
+const state = { current: 0, answers: new Array(QUESTIONS.length).fill(null), result: null };
+const $ = id => document.getElementById(id);
+const screens = { welcome: $("screen-welcome"), quiz: $("screen-quiz"), results: $("screen-results") };
+const LETTERS = ["A", "B", "C", "D"];
+
+function announce(msg) { const l = $("live"); l.textContent = ""; setTimeout(() => l.textContent = msg, 30); }
+
+function showScreen(name, focusId) {
+  Object.entries(screens).forEach(([k, el]) => {
+    el.hidden = k !== name;
+    el.classList.remove("is-entering");
+  });
+  const el = screens[name];
+  void el.offsetWidth;
+  el.classList.add("is-entering");
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  if (focusId) setTimeout(() => $(focusId).focus({ preventScroll: true }), 20);
+}
+
+/* ---------- Cuestionario ---------- */
+function renderQuestion(dir) {
+  const q = QUESTIONS[state.current];
+  const n = state.current + 1, total = QUESTIONS.length;
+
+  $("progress-label").innerHTML = `Pregunta ${n} <span>de ${total}</span>`;
+  $("progress-fill").style.width = (n / total * 100) + "%";
+  $("progressbar").setAttribute("aria-valuenow", n);
+  $("progressbar").setAttribute("aria-valuetext", `Pregunta ${n} de ${total}`);
+
+  $("q-dimension").textContent = q.topic;
+  $("q-title").textContent = q.text;
+  $("q-legend").textContent = q.text;
+
+  const box = $("options");
+  box.innerHTML = "";
+  q.options.forEach((o, i) => {
+    const id = `q${state.current}-o${i}`;
+    const label = document.createElement("label");
+    label.className = "opt";
+    label.htmlFor = id;
+    label.innerHTML = `
+      <input type="radio" name="answer" id="${id}" value="${i}">
+      <span class="opt-key" aria-hidden="true">${LETTERS[i]}</span>
+      <span class="opt-text"></span>
+      <span class="opt-check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="var(--on-brand)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    label.querySelector(".opt-text").textContent = o.t;
+    const input = label.querySelector("input");
+    if (state.answers[state.current] === i) { input.checked = true; label.classList.add("is-selected"); }
+    input.addEventListener("change", () => select(i));
+    box.appendChild(label);
+  });
+
+  $("btn-prev").disabled = state.current === 0;
+  $("btn-next").textContent = n === total ? "Ver resultados" : "Siguiente";
+  updateNext();
+
+  const area = $("q-area");
+  area.classList.remove("enter-next", "enter-prev");
+  if (dir) { void area.offsetWidth; area.classList.add(dir === "prev" ? "enter-prev" : "enter-next"); }
+}
+
+function select(i) {
+  state.answers[state.current] = i;
+  document.querySelectorAll("#options .opt").forEach((el, k) => {
+    el.classList.toggle("is-selected", k === i);
+    el.classList.remove("pop");
+    el.querySelector("input").checked = k === i;
+  });
+  const chosen = document.querySelectorAll("#options .opt")[i];
+  void chosen.offsetWidth; chosen.classList.add("pop");
+  updateNext();
+}
+
+function updateNext() {
+  const has = state.answers[state.current] !== null;
+  $("btn-next").disabled = !has;
+  const hint = $("q-hint");
+  hint.textContent = has
+    ? (state.current === QUESTIONS.length - 1 ? "Respuesta guardada. Ya puedes ver tus resultados." : "Respuesta guardada. Puedes avanzar.")
+    : "Elige una opción para continuar.";
+  hint.classList.toggle("is-ok", has);
+}
+
+function next() {
+  if (state.answers[state.current] === null) {
+    $("q-hint").textContent = "Necesitas elegir una opción antes de avanzar.";
+    return;
+  }
+  if (state.current < QUESTIONS.length - 1) {
+    state.current++;
+    renderQuestion("next");
+    $("q-title").focus({ preventScroll: true });
+    announce(`Pregunta ${state.current + 1} de ${QUESTIONS.length}`);
+  } else {
+    finish();
+  }
+}
+
+function prev() {
+  if (state.current === 0) return;
+  state.current--;
+  renderQuestion("prev");
+  $("q-title").focus({ preventScroll: true });
+  announce(`Pregunta ${state.current + 1} de ${QUESTIONS.length}`);
+}
+
+function startQuiz() {
+  state.current = 0;
+  state.answers = new Array(QUESTIONS.length).fill(null);
+  state.result = null;
+  disarmReset();
+  renderQuestion();
+  showScreen("quiz", "q-title");
+}
+
+/* Reinicio con confirmación en dos pasos (sin diálogos del navegador) */
+let resetTimer = null;
+function disarmReset() {
+  clearTimeout(resetTimer);
+  const b = $("btn-reset");
+  b.classList.remove("is-armed");
+  b.textContent = "Reiniciar test";
+}
+function onReset() {
+  const b = $("btn-reset");
+  const any = state.answers.some(a => a !== null);
+  if (!any || b.classList.contains("is-armed")) {
+    disarmReset();
+    startQuiz();
+    announce("Test reiniciado. Pregunta 1 de 12.");
+    return;
+  }
+  b.classList.add("is-armed");
+  b.textContent = "Pulsa otra vez para borrar tus respuestas";
+  resetTimer = setTimeout(disarmReset, 4000);
+}
+
+/* ---------- Resultados ---------- */
+function levelOf(v) { return v < 35 ? 1 : v < 65 ? 2 : 3; }
+const LEVEL_TXT = ["", "Bajo", "Medio", "Alto"];
+const LEVEL_DIMS = [["vol", "Tolerancia a la volatilidad"], ["ctl", "Necesidad de control"], ["pac", "Paciencia"], ["ape", "Apertura"], ["imp", "Impulsividad"], ["conf", "Confianza propia"]];
+
+function finish() {
+  const res = computeProfile(state.answers);
+  state.result = res;
+  const a = res.top;
+
+  $("res-name").textContent = a.name;
+  $("res-slogan").textContent = a.slogan;
+  $("res-desc").textContent = a.desc;
+  const topAff = Math.round(res.ranking[0].affinity);
+  $("res-affinity").innerHTML = `<span>Afinidad con el arquetipo: <b>${topAff}/100</b></span><span class="muted">Le siguen: ${res.ranking.slice(1, 3).map(x => `${x.a.name} (${Math.round(x.affinity)})`).join(" · ")}</span>`;
+
+  const sec = $("res-secondary");
+  if (res.second) { sec.hidden = false; sec.textContent = `Tu perfil tiene rasgos relevantes de: ${res.second.name}. Ambos arquetipos quedan muy cerca, así que te conviene leer también sus principios.`; }
+  else sec.hidden = true;
+
+  // Barras de dimensiones
+  $("legend").innerHTML = `<span><i></i>Tu puntuación</span><span><i class="mark"></i>Valor típico de ${a.name}</span>`;
+  const bars = $("bars");
+  bars.innerHTML = "";
+  DIMS.forEach(d => {
+    const v = res.scores[d.key];
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `
+      <div class="bar-head"><span class="bar-name" id="bn-${d.key}">${d.name}</span><span class="bar-val">${v}</span></div>
+      <div class="bar-track" role="meter" aria-labelledby="bn-${d.key}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v}">
+        <div class="bar-fill" data-w="${v}"></div>
+        <span class="bar-mark" style="left:${a.p[d.key]}%" title="Valor típico del arquetipo: ${a.p[d.key]}"></span>
+      </div>
+      <div class="bar-poles"><span>${d.low}</span><span>${d.high}</span></div>`;
+    bars.appendChild(row);
+  });
+
+  // Categóricas: reacción ante caídas y estilo de decisión
+  const cats = $("cats");
+  cats.innerHTML = "";
+  Object.entries(CATS).forEach(([c, def]) => {
+    const entries = Object.entries(res.shares[c]).sort((x, y) => y[1] - x[1]);
+    const topKey = entries[0][0];
+    const panel = document.createElement("div");
+    panel.className = "panel";
+    panel.innerHTML = `<h3>${def.title}</h3><p class="dominant">Tendencia principal: <b>${def.keys[topKey]}</b>. <span class="muted">${def.explain}</span></p><div class="seg-list"></div>`;
+    const list = panel.querySelector(".seg-list");
+    entries.forEach(([k, s]) => {
+      const pct = Math.round(s * 100);
+      const row = document.createElement("div");
+      row.className = "seg" + (k === topKey ? " is-top" : "");
+      row.innerHTML = `<span class="seg-name">${def.keys[k]}</span><span class="seg-track" aria-hidden="true"><span class="seg-fill" data-w="${pct}"></span></span><span class="seg-pct">${pct} %</span>`;
+      list.appendChild(row);
+    });
+    cats.appendChild(panel);
+  });
+
+  // Nivel relativo del arquetipo
+  $("levels-sub").textContent = `Así suele ser ${a.name} en seis rasgos clave. Sirve como referencia para comparar con tus barras.`;
+  $("levels").innerHTML = LEVEL_DIMS.map(([k, label]) => {
+    const l = levelOf(a.p[k]);
+    return `<div class="level"><span>${label}</span><span class="pips" aria-label="${LEVEL_TXT[l]}">${[1, 2, 3].map(i => `<i class="${i <= l ? "on" : ""}"></i>`).join("")}<em>${LEVEL_TXT[l]}</em></span></div>`;
+  }).join("");
+
+  // Listas de contenido (textContent para evitar inyección)
+  fillList("res-strengths", a.strengths.map(s => [null, s]));
+  fillList("res-risks", a.risks);
+  const pr = $("res-principles"); pr.innerHTML = "";
+  a.principles.forEach(t => { const d = document.createElement("p"); d.className = "principle"; d.textContent = t; pr.appendChild(d); });
+  const rl = $("res-rules"); rl.innerHTML = "";
+  const ORD = ["Primera", "Segunda", "Tercera"];
+  a.rules.forEach((t, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="clause-n">${ORD[i]}</span><p></p>`;
+    li.querySelector("p").textContent = t;
+    rl.appendChild(li);
+  });
+  $("res-date").textContent = "Fecha: " + new Date().toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+  $("res-closing").textContent = a.closing;
+
+  $("status").textContent = ""; $("status").className = "status";
+  $("fallback").hidden = true;
+
+  showScreen("results", "res-name");
+  announce(`Resultado: ${a.name}. ${a.slogan}`);
+
+  // Animación de barras: de 0 al valor
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll("#screen-results [data-w]").forEach(el => el.style.width = el.dataset.w + "%");
+  }));
+}
+
+function fillList(id, items) {
+  const ul = $(id); ul.innerHTML = "";
+  items.forEach(([b, t]) => {
+    const li = document.createElement("li");
+    if (b) { const s = document.createElement("b"); s.textContent = b + ": "; li.appendChild(s); }
+    li.appendChild(document.createTextNode(t));
+    ul.appendChild(li);
+  });
+}
+
+/* ---------- Exportación ---------- */
+function buildText() {
+  const r = state.result, a = r.top;
+  const L = [];
+  const hr = "─".repeat(56);
+  L.push("INVERSOR POR PERSONALIDAD · Resultado del test", hr, "");
+  L.push(`Arquetipo: ${a.name}`, `«${a.slogan}»`);
+  L.push(`Afinidad: ${Math.round(r.ranking[0].affinity)}/100`);
+  if (r.second) L.push(`Tu perfil tiene rasgos relevantes de: ${r.second.name}`);
+  L.push("", a.desc, "", "PUNTUACIÓN POR DIMENSIONES (0–100)");
+  DIMS.forEach(d => {
+    const v = r.scores[d.key];
+    const bar = "█".repeat(Math.round(v / 5)) + "░".repeat(20 - Math.round(v / 5));
+    L.push(`  ${bar} ${String(v).padStart(3)}  ${d.name}`);
+  });
+  Object.entries(CATS).forEach(([c, def]) => {
+    L.push("", def.title.toUpperCase());
+    Object.entries(r.shares[c]).sort((x, y) => y[1] - x[1]).forEach(([k, s]) => L.push(`  ${String(Math.round(s * 100)).padStart(3)} %  ${def.keys[k]}`));
+  });
+  L.push("", "FORTALEZAS");
+  a.strengths.forEach(s => L.push(`  • ${s}`));
+  L.push("", "TENDENCIAS A VIGILAR");
+  a.risks.forEach(([b, t]) => L.push(`  • ${b}: ${t}`));
+  L.push("", "PRINCIPIOS PRÁCTICOS");
+  a.principles.forEach(s => L.push(`  • ${s}`));
+  L.push("", "CONTRATO PERSONAL DE INVERSIÓN");
+  a.rules.forEach((s, i) => L.push(`  ${i + 1}. ${s}`));
+  L.push("", a.closing, "Tu ventaja no es predecir el mercado; es invertir de forma coherente con quien eres.");
+  L.push("", hr, "Esta aplicación es una herramienta educativa y de autoconocimiento. No constituye asesoramiento financiero, legal ni fiscal.");
+  L.push(`Generado el ${new Date().toLocaleDateString("es-ES")} en tu navegador. No se ha guardado ni enviado ningún dato.`);
+  return L.join("\n");
+}
+
+function setStatus(msg, kind) { const s = $("status"); s.textContent = msg; s.className = "status" + (kind ? " is-" + kind : ""); }
+
+function showFallback(text) {
+  const f = $("fallback"), ta = $("fallback-text");
+  ta.value = text; f.hidden = false;
+  ta.focus(); ta.select();
+}
+
+function copyResult() {
+  const text = buildText();
+  const fail = () => {
+    setStatus("No se ha podido copiar automáticamente. Hemos seleccionado el texto debajo: cópialo con Ctrl+C o Cmd+C.", "error");
+    showFallback(text);
+  };
+  try {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) return fail();
+    navigator.clipboard.writeText(text).then(() => setStatus("Resultado copiado al portapapeles.", "ok"), fail);
+  } catch (e) { fail(); }
+}
+
+/* Si la página se abre dentro de un visor que gestiona descargas, se usa su servicio;
+   abierta como archivo local, se descarga con un enlace normal. */
+const hostDownloads = (window.claude && typeof window.claude.use === "function")
+  ? window.claude.use("downloads").catch(() => null)
+  : Promise.resolve(null);
+
+async function downloadResult() {
+  const text = buildText();
+  const filename = `inversor-por-personalidad-${state.result.top.id}.txt`;
+  const host = window.claude ? await hostDownloads : null;
+  if (host) {
+    try {
+      await host.save({ filename, data: text });
+      setStatus(`Archivo guardado: ${filename}.`, "ok");
+    } catch (e) {
+      if (e && e.code === "declined") setStatus("Descarga cancelada. Puedes intentarlo de nuevo o usar «Copiar resultado».");
+      else { setStatus("No se ha podido descargar desde aquí. Tienes el texto completo debajo para copiarlo.", "error"); showFallback(text); }
+    }
+    return;
+  }
+  try {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `inversor-por-personalidad-${state.result.top.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    setStatus(`Descarga iniciada: inversor-por-personalidad-${state.result.top.id}.txt. Si tu navegador la bloquea, usa «Copiar resultado».`, "ok");
+  } catch (e) {
+    setStatus("Tu navegador no permite la descarga desde aquí. Tienes el texto completo debajo para copiarlo.", "error");
+    showFallback(text);
+  }
+}
+
+/* ---------- Eventos ---------- */
+$("btn-start").addEventListener("click", startQuiz);
+$("btn-next").addEventListener("click", next);
+$("btn-prev").addEventListener("click", prev);
+$("btn-reset").addEventListener("click", onReset);
+$("btn-repeat").addEventListener("click", () => { startQuiz(); announce("Nuevo test. Pregunta 1 de 12."); });
+$("btn-copy").addEventListener("click", copyResult);
+$("btn-download").addEventListener("click", downloadResult);
+$("quiz-form").addEventListener("submit", e => { e.preventDefault(); next(); });
+
+// Atajos de teclado en el cuestionario: 1–4 / A–D eligen; Intro avanza
+document.addEventListener("keydown", e => {
+  if (screens.quiz.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "textarea") return;
+  const k = e.key.toLowerCase();
+  const map = { "1": 0, "2": 1, "3": 2, "4": 3, a: 0, b: 1, c: 2, d: 3 };
+  if (k in map) {
+    e.preventDefault();
+    select(map[k]);
+    document.querySelectorAll("#options input")[map[k]].focus({ preventScroll: true });
+  } else if (k === "enter" && tag !== "button") {
+    e.preventDefault();
+    if (!$("btn-next").disabled) next();
+  }
+});
+</script>
+</body>
+</html>
